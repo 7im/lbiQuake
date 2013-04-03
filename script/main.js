@@ -13,6 +13,10 @@ var g_resources = [{
     type: "image",
     src: "data/maps_tileset/area01_level_tiles.png"
 }, {
+    name: "lbi10",
+    type: "image",
+    src: "data/maps_tileset/lbi10.png"
+}, {
     name: "metatiles32x32",
     type: "image",
     src: "data/maps_tileset/metatiles32x32.png"
@@ -120,17 +124,17 @@ var jsApp	=
 
 		// Debugging settings
 		me.debug.renderHitBox = true;
+        me.debug.displayFPS = true;
 
 
+        // initialize the "audio"
+        me.audio.init("mp3,ogg");
 
-		// initialize the "audio"
-		me.audio.init("mp3,ogg");
+        // set all resources to be loaded
+        me.loader.onload = this.loaded.bind(this);
 
-		// set all resources to be loaded
-		me.loader.onload = this.loaded.bind(this);
-
-		// set all resources to be loaded
-		me.loader.preload(g_resources);
+        // set all resources to be loaded
+        me.loader.preload(g_resources);
 
 		// load everything & display a loading screen
 		me.state.change(me.state.LOADING);
@@ -148,6 +152,11 @@ var jsApp	=
 
 		// set the "Play/Ingame" Screen Object
 		me.state.set(me.state.PLAY, new PlayScreen());
+        // me.state.set(me.state.GAME_END, new WinScreen());
+        // me.state.set(me.state.GAME_OVER, new LoseScreen());
+
+        // set a global fading transition for the screen
+        me.state.transition("fade", "#FFFFFF", 250);
 
 		// add our player entity in the entity pool
 		me.entityPool.add("mainPlayer", PlayerEntity);
@@ -159,7 +168,7 @@ var jsApp	=
 		me.input.bindKey(me.input.KEY.RIGHT, "right");
 		me.input.bindKey(me.input.KEY.UP,    "up");
         me.input.bindKey(me.input.KEY.DOWN,  "down");
-		me.input.bindKey(me.input.KEY.SPACE,  "shoot");
+		me.input.bindKey(me.input.KEY.SPACE,  "shoot", true);
 		// me.input.bindKey(me.input.KEY.X,     "jump", true);
 
 		// start the game

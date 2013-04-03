@@ -11,7 +11,8 @@ var LaserEntity = me.ObjectEntity.extend({
 
 		this.maxwidth = 32;
 		this.parent(x, y, settings);
-		this.collidable = true;
+
+		this.type = 'bullet';
 		if (!this.name) {
 			this.name = "laserentity";
 		}
