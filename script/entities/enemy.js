@@ -22,7 +22,7 @@ var EnemyEntity = me.ObjectEntity.extend({
         this.walkLeft = true;
 
         // walking & jumping speed
-        this.setVelocity(4, 6);
+        this.setVelocity(2, 2);
 
         // make it collidable
         this.collidable = true;

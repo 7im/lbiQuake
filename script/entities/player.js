@@ -17,16 +17,92 @@ var PlayerEntity = me.ObjectEntity.extend({
         // set the default horizontal & vertical speed (accel vector)
         this.setVelocity(3, 3);
 
+        // initial player shooting direction
+        this.direction = new me.Vector2d( 1.0, 0.0 );
+
         // adjust the bounding box
         this.updateColRect(8, 48, -1, 0);
 
         // set player bullet
         // me.gamestat.setValue("bullet", 10);
+        this.shootingTimer = 0;
+        this.shootingTimerMax = 15;
+        // this.origVelocity = new me.Vector2d( 7.0, 7.0 );
+        // this.dashTimer = 0;
+        // this.dashTimerMax = 30;
 
         // set the display to follow our position on both axis
         me.game.viewport.follow(this.pos, me.game.viewport.AXIS.BOTH);
 
         me.game.player = this;
+    },
+
+    checkInput: function() {
+        var tempDir = new me.Vector2d( 0.0, 0.0 );
+
+        if ( me.input.isKeyPressed( "left" ) ) {
+            tempDir.x = -1.0;
+            this.directionString = "left";
+        }
+        if ( me.input.isKeyPressed( "right" ) ) {
+            tempDir.x = 1.0;
+            this.directionString = "right";
+        }
+        if ( me.input.isKeyPressed( "up" ) ) {
+            tempDir.y = -1.0;
+            this.directionString = "up";
+        }
+        if ( me.input.isKeyPressed( "down" ) ) {
+            tempDir.y = 1.0;
+            this.directionString = "down";
+        }
+
+        if ( tempDir.x !== 0.0 || tempDir.y !== 0.0 ) {
+            if (tempDir.x < 0) {
+                // flip the sprite on horizontal axis
+                this.flipX(true);
+            } else {
+                this.flipX(false);
+            }
+            this.vel.x = tempDir.x * this.accel.x * me.timer.tick;
+            this.vel.y = tempDir.y * this.accel.y * me.timer.tick;
+            this.direction = tempDir;
+        } else {
+            this.vel.x = 0;
+            this.vel.y = 0;
+        }
+
+        // all attacks have to be on cooldown
+        if ( me.input.isKeyPressed( "shoot" )  && this.bullet > 0 && this.shootingTimer === 0 ) {
+            var laserEntity = new LaserEntity(this.pos.x + 20, this.pos.y + 5);
+
+            laserEntity.vel.x *= this.direction.x;
+            laserEntity.vel.y *= this.direction.y;
+
+            me.game.add(laserEntity, this.z + 1);
+            me.game.sort();
+
+            this.bullet -= 1;
+            this.shootingTimer = this.shootingTimerMax;
+            // this.weakAttackType = ++this.weakAttackType % 2;
+            // this.attack( "weakAttack" );
+            // me.audio.play( "weakattack" + this.weakAttackType );
+
+            // this.removeEnemies();
+        }
+
+        // dash
+        // dash also has to be on cooldown
+        if ( me.input.isKeyPressed( "dash" ) && this.dashTimer === 0 ) {
+            // this.setMaxVelocity( this.origVelocity.x * 2.5,
+            //                      this.origVelocity.y * 2.5 );
+            // this.dashTimer = this.dashTimerMax;
+
+            // this.addAnimation( "right", [ 9, 10, 11 ] );
+            // this.spawnDashParticle();
+
+            // me.audio.play( "dash" );
+        }
     },
 
     /* -----
@@ -36,56 +112,7 @@ var PlayerEntity = me.ObjectEntity.extend({
     ------ */
     update: function() {
 
-        if (me.input.isKeyPressed('left')) {
-            // flip the sprite on horizontal axis
-            this.flipX(true);
-            // update the entity velocity
-            this.vel.x -= this.accel.x * me.timer.tick;
-        } else if (me.input.isKeyPressed('right')) {
-            // unflip the sprite
-            this.flipX(false);
-            // update the entity velocity
-            this.vel.x += this.accel.x * me.timer.tick;
-        } else {
-            this.vel.x = 0;
-        }
-        if (me.input.isKeyPressed('up')) {
-            // unflip the sprite
-            this.flipX(false);
-            // gravity will then do the rest
-            this.vel.y -= this.accel.y * me.timer.tick;
-        } else if (me.input.isKeyPressed('down')) {
-            // unflip the sprite
-            this.flipX(false);
-            // gravity will then do the rest
-            this.vel.y += this.accel.y * me.timer.tick;
-        } else {
-            this.vel.y = 0;
-        }
-
-        if (me.input.isKeyPressed('shoot') && this.bullet > 0) {
-            var laserEntity = new LaserEntity(this.pos.x + 20, this.pos.y + 5);
-            laserEntity.accel.x = 20;
-            // laserEntity.vel.x = this.direction==-1?-20:20;
-            laserEntity.vel.x = 20;
-            laserEntity.vel.y = 0;
-            me.game.add(laserEntity, 3);
-            me.game.sort();
-            this.bullet -= 1;
-        }
-        // if (me.input.isKeyPressed('jump')) {
-        //     // make sure we are not already jumping or falling
-        //     if (!this.jumping && !this.falling) {
-        //         // set current vel to the maximum defined value
-        //         // gravity will then do the rest
-        //         this.vel.y = -this.maxVel.y * me.timer.tick;
-        //         // set the jumping flag
-        //         this.jumping = true;
-        //         // play some audio
-        //         me.audio.play("jump");
-        //     }
-
-        // }
+        this.checkInput();
 
         // check & update player movement
         this.updateMovement();
@@ -112,8 +139,15 @@ var PlayerEntity = me.ObjectEntity.extend({
             }
         }
 
+        if (this.shootingTimer > 0) {
+            this.shootingTimer--;
+        }
+        // if (this.dashTimer > 0) {
+        //     this.dashTimer--;
+        // }
+
         // update animation if necessary
-        if (this.vel.x!=0 || this.vel.y!=0) {
+        if (this.vel.x !== 0 || this.vel.y !== 0) {
             // update object animation
             this.parent();
             return true;
