@@ -22,7 +22,7 @@ var LaserEntity = me.ObjectEntity.extend({
 		this.setMaxVelocity(25,0);
 		this.setFriction(0,0);
 		this.vel.x = 20;
-		this.vel.y = 0;
+		this.vel.y = 20;
 
 		// me.audio.play("sfx_gerbil_laser_1");
 	},
@@ -40,12 +40,17 @@ var LaserEntity = me.ObjectEntity.extend({
 			}
 		}
 	},*/
-	update: function(){
-		this.pos.x = this.pos.x + this.vel.x*me.timer.tick;
-		var res = me.game.collide(this);
+	update: function() {
+		this.pos.x = this.pos.x + this.vel.x * me.timer.tick;
+		this.pos.y = this.pos.y + this.vel.y * me.timer.tick;
+
+		var res = me.game.collide(this),
+			isOutsideX = this.pos.x < 0 || this.pos.x > me.game.viewport.pos.x + me.game.viewport.width,
+			isOutsideY = this.pos.y < 0 || this.pos.y > me.game.viewport.pos.y + me.game.viewport.height;
+
 		this.parent();
 
-		if(this.pos.x > me.game.viewport.pos.x + me.game.viewport.width){
+		if ( isOutsideX || isOutsideY ) {
 			me.game.remove(this);
 		}
 
