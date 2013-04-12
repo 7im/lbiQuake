@@ -3,7 +3,7 @@ an enemy Entity
 ------------------------ */
 var EnemyEntity = me.ObjectEntity.extend({
     init: function(x, y, settings) {
-        this.range = settings.range || 400;
+        this.range = settings.range || 300;
         this.speed = settings.speed || 0.3;
 
         // define this here instead of tiled
@@ -26,13 +26,14 @@ var EnemyEntity = me.ObjectEntity.extend({
 
         // make it collidable
         this.collidable = true;
+
+        this.shootTimer = 0;
+
         // make it a enemy object
         this.type = me.game.ENEMY_OBJECT;
 
         this.hp = 3;
         this.directionString = "down";
-
-
 
         var directions = [ "down", "left", "up", "right" ];
         for ( var i = 0; i < directions.length; i++ )
@@ -82,6 +83,8 @@ var EnemyEntity = me.ObjectEntity.extend({
         if (this.alive && obj.type === 'bullet') {
             this.flicker(45);
             this.hp -= 1;
+            this.collidable = false;
+            this.hitTimer = 10;
             if (this.hp <= 0) {
                 this.alive = false;
             }
@@ -96,6 +99,12 @@ var EnemyEntity = me.ObjectEntity.extend({
             return false;
 
         if (this.alive) {
+
+            if (this.hitTimer > 0) {
+                this.hitTimer--;
+            } else {
+                this.collidable = true;
+            }
             // if (this.walkLeft && this.pos.x <= this.startX) {
             //     this.walkLeft = false;
             // } else if (!this.walkLeft && this.pos.x >= this.endX) {
@@ -109,7 +118,7 @@ var EnemyEntity = me.ObjectEntity.extend({
             var direction = this.toPlayer();
             var move = false;
 
-            if( direction ) {
+            if ( direction ) {
                 var dist = direction.length();
                 if( dist < this.range && dist > 150 )
                 {
@@ -119,28 +128,49 @@ var EnemyEntity = me.ObjectEntity.extend({
                     this.direction = direction;
                     move = true;
 
-                    // if ( this.shootTimer == 0 && dist > 50 )
-                    // {
-                    //     this.fireBullet( "shooterBullet", 8.0 );
-                    //     this.shootTimer = 180;
-                    // }
+                    if ( this.shootTimer == 0 && dist > 50 ) {
+                        this.fireBullet( "shooterBullet", 8.0 );
+                        this.shootTimer = 180;
+                    }
                 }
+            }
+
+            if ( this.shootTimer > 0 ) {
+                this.shootTimer--;
             }
 
         } else {
             this.vel.x = 0;
+            this.vel.y = 0;
         }
 
         // check and update movement
         this.updateMovement();
 
         // update animation if necessary
-        if (this.vel.x!=0 || this.vel.y!=0) {
+        // need to check collidable to finish flicker?
+        if (this.vel.x!=0 || this.vel.y!=0 || !this.collidable) {
             // update object animation
             this.parent();
             return true;
         }
         return false;
+    },
+
+    fireBullet: function( image, velMult ) {
+        // note collide is false as the player checks its own collision, bullet will be recipient & get oncollision call
+        var bPosX = this.pos.x + ( this.width / 2 ) - 24;
+        var bPosY = this.pos.y + ( this.height / 2 ) - 24;
+        // var bullet = new EnemyBullet( bPosX, bPosY, image || "shooterBullet", 48, 5, [ 0 ], "shooterBullet", false, 48 );
+        var bullet = new LaserEntity(this.pos.x + 20, this.pos.y + 5);
+        var dir = this.toPlayer();
+        dir.normalize();
+        bullet.vel.x = dir.x * ( velMult || 5.0 );
+        bullet.vel.y = dir.y * ( velMult || 5.0 );
+
+        me.game.add( bullet, this.z + 1 );
+        me.game.sort();
+        // me.audio.play( "shoot" );
     }
 
     // knockback: function( damage, amt, length )

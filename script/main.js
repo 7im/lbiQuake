@@ -33,6 +33,10 @@ var g_resources = [{
     type: "tmx",
     src: "data/area02.tmx"
 }, {
+    name: "player_sprite",
+    type: "image",
+    src: "data/sprite/player_sprite.png"
+}, {
     name: "gripe_run_right",
     type: "image",
     src: "data/sprite/gripe_run_right.png"
@@ -113,7 +117,7 @@ var jsApp	=
 	{
 
 		// init the video
-		if (!me.video.init('jsapp', 640, 480, false, 1.0))
+		if (!me.video.init('jsapp', 960, 720, false, 1.0))
 		{
 			alert("Sorry but your browser does not support html 5 canvas.");
          return;
@@ -168,8 +172,8 @@ var jsApp	=
 		me.input.bindKey(me.input.KEY.RIGHT, "right");
 		me.input.bindKey(me.input.KEY.UP,    "up");
         me.input.bindKey(me.input.KEY.DOWN,  "down");
-        me.input.bindKey(me.input.KEY.SPACE,  "shoot");
-		me.input.bindKey(me.input.KEY.ALT,  "dash");
+        me.input.bindKey(me.input.KEY.SPACE, "shoot");
+		me.input.bindKey(me.input.KEY.ALT,   "dash");
 		// me.input.bindKey(me.input.KEY.X,     "jump", true);
 
 		// start the game

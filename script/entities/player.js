@@ -17,11 +17,11 @@ var PlayerEntity = me.ObjectEntity.extend({
         // set the default horizontal & vertical speed (accel vector)
         this.setVelocity(3, 3);
 
-        // initial player shooting direction
+        // initial player shooting direction - right
         this.direction = new me.Vector2d( 1.0, 0.0 );
 
         // adjust the bounding box
-        this.updateColRect(8, 48, -1, 0);
+        this.updateColRect(4, 40, -1, 0);
 
         // set player bullet
         // me.gamestat.setValue("bullet", 10);
