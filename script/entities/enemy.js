@@ -7,33 +7,18 @@ var EnemyEntity = me.ObjectEntity.extend({
         this.speed = settings.speed || 0.3;
 
         // define this here instead of tiled
-        settings.image = "wheelie_right";
-        settings.spritewidth = 64;
+        settings.image = "enemy_sprite";
+        settings.spritewidth = 48;
+        settings.spriteheight = 48;
 
         // call the parent constructor
         this.parent(x, y, settings);
 
-        this.startX = x;
-        this.endX = x + settings.width - settings.spritewidth;
-        // size of sprite
-
-        // make him start from the right
-        this.pos.x = x + settings.width - settings.spritewidth;
-        this.walkLeft = true;
-
         // walking & jumping speed
         this.setVelocity(2, 2);
 
-        // make it collidable
-        this.collidable = true;
-
-        this.shootTimer = 0;
-
-        // make it a enemy object
-        this.type = me.game.ENEMY_OBJECT;
-
-        this.hp = 3;
-        this.directionString = "down";
+        // adjust the bounding box
+        this.updateColRect(3, 42, -1, 0);
 
         var directions = [ "down", "left", "up", "right" ];
         for ( var i = 0; i < directions.length; i++ )
@@ -44,6 +29,18 @@ var EnemyEntity = me.ObjectEntity.extend({
                 [ index, index + 1, index, index + 2 ] );
             this.addAnimation( directions[ i ] + "shoot", [ index + 3 ] );
         }
+        this.addAnimation( "dead", [ i * 4 ] );
+        this.directionString = "right";
+
+        // make it collidable
+        this.collidable = true;
+
+        this.shootTimer = 0;
+
+        // make it a enemy object
+        this.type = me.game.ENEMY_OBJECT;
+
+        this.hp = 3;
     },
 
     updateDirectionString: function()
@@ -92,6 +89,16 @@ var EnemyEntity = me.ObjectEntity.extend({
         }
     },
 
+    updateAnimation: function() {
+        if ( this.shootingTimer > 5 ) {
+            this.setCurrentAnimation( this.directionString + "shoot" );
+        } else if ( this.vel.x !== 0.0 || this.vel.y !== 0.0 ) {
+            this.setCurrentAnimation( this.directionString + "run" );
+        } else {
+            this.setCurrentAnimation( this.directionString + "idle" );
+        }
+    },
+
     // manage the enemy movement
     update: function() {
         // do nothing if not visible
@@ -99,6 +106,8 @@ var EnemyEntity = me.ObjectEntity.extend({
             return false;
 
         if (this.alive) {
+
+            this.updateAnimation();
 
             if (this.hitTimer > 0) {
                 this.hitTimer--;
@@ -116,22 +125,22 @@ var EnemyEntity = me.ObjectEntity.extend({
             this.updateDirectionString();
 
             var direction = this.toPlayer();
-            var move = false;
 
             if ( direction ) {
                 var dist = direction.length();
-                if( dist < this.range && dist > 150 )
-                {
+                if( dist < this.range ) {
                     direction.normalize();
                     this.vel.x += direction.x * this.speed;
                     this.vel.y += direction.y * this.speed;
                     this.direction = direction;
-                    move = true;
 
                     if ( this.shootTimer == 0 && dist > 50 ) {
                         this.fireBullet( "shooterBullet", 8.0 );
                         this.shootTimer = 180;
                     }
+                } else {
+                    this.vel.x = 0;
+                    this.vel.y = 0;
                 }
             }
 
@@ -142,6 +151,7 @@ var EnemyEntity = me.ObjectEntity.extend({
         } else {
             this.vel.x = 0;
             this.vel.y = 0;
+            this.setCurrentAnimation( "dead" );
         }
 
         // check and update movement
@@ -163,6 +173,7 @@ var EnemyEntity = me.ObjectEntity.extend({
         var bPosY = this.pos.y + ( this.height / 2 ) - 24;
         // var bullet = new EnemyBullet( bPosX, bPosY, image || "shooterBullet", 48, 5, [ 0 ], "shooterBullet", false, 48 );
         var bullet = new LaserEntity(this.pos.x + 20, this.pos.y + 5);
+        bullet.type = 'enemyBullet';
         var dir = this.toPlayer();
         dir.normalize();
         bullet.vel.x = dir.x * ( velMult || 5.0 );

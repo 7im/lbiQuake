@@ -9,10 +9,6 @@
 
 // game resources
 var g_resources = [{
-    name: "area01_level_tiles",
-    type: "image",
-    src: "data/maps_tileset/area01_level_tiles.png"
-}, {
     name: "lbi10",
     type: "image",
     src: "data/maps_tileset/lbi10.png"
@@ -25,21 +21,15 @@ var g_resources = [{
     type: "tmx",
     src: "data/level01.tmx"
 }, {
-    name: "area01",
-    type: "tmx",
-    src: "data/area01.tmx"
-}, {
-    name: "area02",
-    type: "tmx",
-    src: "data/area02.tmx"
-}, {
     name: "player_sprite",
     type: "image",
     src: "data/sprite/player_sprite.png"
-}, {
-    name: "gripe_run_right",
+},
+// our enemty entity
+{
+    name: "enemy_sprite",
     type: "image",
-    src: "data/sprite/gripe_run_right.png"
+    src: "data/sprite/enemy_sprite.png"
 },
 // the title screen
 {
@@ -68,12 +58,6 @@ var g_resources = [{
     name:"laser_light",
     type: "image",
     src:"data/sprite/tmplaser.png"
-},
-// our enemty entity
-{
-    name: "wheelie_right",
-    type: "image",
-    src: "data/sprite/wheelie_right.png"
 },
 // game font
 {
@@ -108,6 +92,11 @@ var g_resources = [{
 
 var jsApp	=
 {
+    config: {
+        width: 960,
+        height: 720
+    },
+
 	/* ---
 
 		Initialize the jsApp
@@ -117,7 +106,7 @@ var jsApp	=
 	{
 
 		// init the video
-		if (!me.video.init('jsapp', 960, 720, false, 1.0))
+		if (!me.video.init('jsapp', this.config.width, this.config.height, false, 1.0))
 		{
 			alert("Sorry but your browser does not support html 5 canvas.");
          return;
@@ -127,7 +116,7 @@ var jsApp	=
 		me.sys.gravity = 0;
 
 		// Debugging settings
-		me.debug.renderHitBox = true;
+		// me.debug.renderHitBox = true;
         me.debug.displayFPS = true;
 
 
@@ -196,10 +185,10 @@ var PlayScreen = me.ScreenObject.extend(
 		me.levelDirector.loadLevel("level01");
 
         // add a default HUD to the game mngr
-        me.game.addHUD(0, 430, 640, 60);
+        me.game.addHUD(0, jsApp.config.height - 60, jsApp.config.width, 60);
 
         // add a new HUD item
-        me.game.HUD.addItem("score", new ScoreObject(620, 10));
+        me.game.HUD.addItem("score", new ScoreObject(jsApp.config.width - 10, 10));
 
         // make sure everyhting is in the right order
         me.game.sort();

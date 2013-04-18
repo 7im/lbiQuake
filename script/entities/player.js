@@ -21,7 +21,19 @@ var PlayerEntity = me.ObjectEntity.extend({
         this.direction = new me.Vector2d( 1.0, 0.0 );
 
         // adjust the bounding box
-        this.updateColRect(4, 40, -1, 0);
+        this.updateColRect(3, 42, -1, 0);
+
+        var directions = [ "down", "left", "up", "right" ];
+        for ( var i = 0; i < directions.length; i++ )
+        {
+            var index = i * 4;
+            this.addAnimation( directions[ i ] + "idle", [ index ] );
+            this.addAnimation( directions[ i ] + "run",
+                [ index, index + 1, index, index + 2 ] );
+            this.addAnimation( directions[ i ] + "shoot", [ index + 3 ] );
+        }
+        this.addAnimation( "dead", [ i * 4 ] );
+        this.directionString = "right";
 
         // set player bullet
         // me.gamestat.setValue("bullet", 10);
@@ -58,12 +70,6 @@ var PlayerEntity = me.ObjectEntity.extend({
         }
 
         if ( tempDir.x !== 0.0 || tempDir.y !== 0.0 ) {
-            if (tempDir.x < 0) {
-                // flip the sprite on horizontal axis
-                this.flipX(true);
-            } else {
-                this.flipX(false);
-            }
             this.vel.x = tempDir.x * this.accel.x * me.timer.tick;
             this.vel.y = tempDir.y * this.accel.y * me.timer.tick;
             this.direction = tempDir;
@@ -105,6 +111,16 @@ var PlayerEntity = me.ObjectEntity.extend({
         }
     },
 
+    updateAnimation: function() {
+        if ( this.shootingTimer > 5 ) {
+            this.setCurrentAnimation( this.directionString + "shoot" );
+        } else if ( this.vel.x !== 0.0 || this.vel.y !== 0.0 ) {
+            this.setCurrentAnimation( this.directionString + "run" );
+        } else {
+            this.setCurrentAnimation( this.directionString + "idle" );
+        }
+    },
+
     /* -----
 
     update the player pos
@@ -113,6 +129,7 @@ var PlayerEntity = me.ObjectEntity.extend({
     update: function() {
 
         this.checkInput();
+        this.updateAnimation();
 
         // check & update player movement
         this.updateMovement();
