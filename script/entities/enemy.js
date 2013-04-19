@@ -82,9 +82,12 @@ var EnemyEntity = me.ObjectEntity.extend({
             this.hp -= 1;
             this.collidable = false;
             this.hitTimer = 10;
+
             if (this.hp <= 0) {
                 this.alive = false;
             }
+
+            me.game.remove(obj);
             // this.knockback( 1, 2.0, 30 );
         }
     },
@@ -134,9 +137,12 @@ var EnemyEntity = me.ObjectEntity.extend({
                     this.vel.y += direction.y * this.speed;
                     this.direction = direction;
 
-                    if ( this.shootTimer == 0 && dist > 50 ) {
-                        this.fireBullet( "shooterBullet", 8.0 );
-                        this.shootTimer = 180;
+                    if ( this.shootTimer === 0 ) {
+                        this.fireBullet();
+                    }
+                    if ( dist < this.range - 100 ) {
+                        this.vel.x = 0;
+                        this.vel.y = 0;
                     }
                 } else {
                     this.vel.x = 0;
@@ -167,20 +173,20 @@ var EnemyEntity = me.ObjectEntity.extend({
         return false;
     },
 
-    fireBullet: function( image, velMult ) {
+    fireBullet: function() {
         // note collide is false as the player checks its own collision, bullet will be recipient & get oncollision call
-        var bPosX = this.pos.x + ( this.width / 2 ) - 24;
-        var bPosY = this.pos.y + ( this.height / 2 ) - 24;
-        // var bullet = new EnemyBullet( bPosX, bPosY, image || "shooterBullet", 48, 5, [ 0 ], "shooterBullet", false, 48 );
-        var bullet = new LaserEntity(this.pos.x + 20, this.pos.y + 5);
-        bullet.type = 'enemyBullet';
-        var dir = this.toPlayer();
+        var bulletPosX = this.pos.x + this.width / 2,
+            bulletPosY = this.pos.y + this.height / 2,
+            dir = this.toPlayer();
         dir.normalize();
-        bullet.vel.x = dir.x * ( velMult || 5.0 );
-        bullet.vel.y = dir.y * ( velMult || 5.0 );
+
+        var bullet = new Laser(this.pos.x, this.pos.y, dir);
+        bullet.type = 'enemyBullet';
 
         me.game.add( bullet, this.z + 1 );
         me.game.sort();
+
+        this.shootTimer = 180;
         // me.audio.play( "shoot" );
     }
 

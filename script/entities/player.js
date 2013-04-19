@@ -8,8 +8,6 @@ var PlayerEntity = me.ObjectEntity.extend({
     constructor
 
     ------ */
-    bullet: 10000,
-
     init: function(x, y, settings) {
         // call the constructor
         this.parent(x, y, settings);
@@ -36,9 +34,9 @@ var PlayerEntity = me.ObjectEntity.extend({
         this.directionString = "right";
 
         // set player bullet
-        // me.gamestat.setValue("bullet", 10);
+        this.bullet = 100;
         this.shootingTimer = 0;
-        this.shootingTimerMax = 15;
+        this.shootingTimerMax = 20;
         // this.origVelocity = new me.Vector2d( 7.0, 7.0 );
         // this.dashTimer = 0;
         // this.dashTimerMax = 30;
@@ -80,15 +78,15 @@ var PlayerEntity = me.ObjectEntity.extend({
 
         // all attacks have to be on cooldown
         if ( me.input.isKeyPressed( "shoot" )  && this.bullet > 0 && this.shootingTimer === 0 ) {
-            var laserEntity = new LaserEntity(this.pos.x + 20, this.pos.y + 5);
-
-            laserEntity.vel.x *= this.direction.x;
-            laserEntity.vel.y *= this.direction.y;
+            var bulletPosX = this.pos.x + this.width / 2,
+                bulletPosY = this.pos.y + this.height / 2,
+                laserEntity = new Bullet(bulletPosX, bulletPosY, this.direction);
 
             me.game.add(laserEntity, this.z + 1);
             me.game.sort();
 
             this.bullet -= 1;
+            me.game.HUD.updateItemValue("bullet", -1);
             this.shootingTimer = this.shootingTimerMax;
             // this.weakAttackType = ++this.weakAttackType % 2;
             // this.attack( "weakAttack" );

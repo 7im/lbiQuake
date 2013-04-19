@@ -3,9 +3,9 @@ a score HUD Item
 --------------------- */
 
 var ScoreObject = me.HUD_Item.extend({
-    init: function(x, y) {
+    init: function(x, y, val) {
         // call the parent constructor
-        this.parent(x, y);
+        this.parent(x, y, val);
         // create a font
         this.font = new me.BitmapFont("32x32_font", 32);
     },

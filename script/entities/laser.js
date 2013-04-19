@@ -1,15 +1,13 @@
-var LaserEntity = me.ObjectEntity.extend({
+var Bullet = me.ObjectEntity.extend({
 	// extending the init function is not mandatory
 	// unless you need to add some extra initialization
-	init: function(x, y, settings) {
+	init: function(x, y, dir, settings) {
 		if (!settings) {
-			settings = {};
+			settings = {
+				image: 'bullet',
+				spritewidth: 10
+			};
 		}
-		// call the parent constructor
-		settings.image = "laser_light";
-		settings.spritewidth = 32;
-
-		this.maxwidth = 32;
 		this.parent(x, y, settings);
 
 		this.type = 'bullet';
@@ -21,25 +19,21 @@ var LaserEntity = me.ObjectEntity.extend({
 		//set max velocity
 		this.setMaxVelocity(25,0);
 		this.setFriction(0,0);
-		this.vel.x = 20;
-		this.vel.y = 20;
+		this.vel.x = dir.x * 6;
+		this.vel.y = dir.y * 6;
 
 		// me.audio.play("sfx_gerbil_laser_1");
 	},
 	// this function is called by the engine, when
 	// an object is touched by something (here collected)
-	/*
-	onCollision: function(res, obj) {
-		if(obj.name!="mainplayer"){
-			if(obj.name=="virusentity"){
-				//this.collidable = false;
-				me.game.remove(this);
-				//me.gamestat.add("score.caught",1);
-			}else{
-				//console.log("virus collided with "+obj.name);
-			}
-		}
-	},*/
+
+	// onCollision: function(res, obj) {
+	// 	if (obj.type === me.game.ENEMY_OBJECT) {
+	// 		me.game.remove(this);
+	// 	} else {
+	// 			//console.log("virus collided with "+obj.name);
+	// 	}
+	// },
 	update: function() {
 		this.pos.x = this.pos.x + this.vel.x * me.timer.tick;
 		this.pos.y = this.pos.y + this.vel.y * me.timer.tick;
@@ -56,11 +50,19 @@ var LaserEntity = me.ObjectEntity.extend({
 
 		// check for collision
 		var map_collision = this.collisionMap.checkCollision(this.collisionBox, this.vel);
-		if (map_collision && map_collision.xtile) {
-			//console.log(map_collision);
+		if (map_collision && (map_collision.xtile || map_collision.ytile) ) {
 			me.game.remove(this);
 		}
 
 		return true;
+	}
+});
+
+var Laser = Bullet.extend({
+	init: function(x, y, dir) {
+		this.parent(x, y, dir, {
+			image: 'laser_light',
+			spritewidth: 32
+		});
 	}
 });

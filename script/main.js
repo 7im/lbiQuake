@@ -55,6 +55,11 @@ var g_resources = [{
 },
 // the spinning coin spritesheet
 {
+    name:"bullet",
+    type: "image",
+    src:"data/sprite/bullet.png"
+},
+{
     name:"laser_light",
     type: "image",
     src:"data/sprite/tmplaser.png"
@@ -181,7 +186,6 @@ var PlayScreen = me.ScreenObject.extend(
 		// me.audio.playTrack("DST-InertExponent");
 
 		// load a level
-        // me.levelDirector.loadLevel("area01");
 		me.levelDirector.loadLevel("level01");
 
         // add a default HUD to the game mngr
@@ -189,6 +193,8 @@ var PlayScreen = me.ScreenObject.extend(
 
         // add a new HUD item
         me.game.HUD.addItem("score", new ScoreObject(jsApp.config.width - 10, 10));
+        me.game.HUD.addItem("bullet", new ScoreObject(280, 10, me.game.player.bullet));
+        me.game.HUD.addItem("bulletLabel", new ScoreObject(160, 10, 'AMMO'));
 
         // make sure everyhting is in the right order
         me.game.sort();
