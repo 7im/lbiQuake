@@ -44,6 +44,8 @@ var PlayerEntity = me.ObjectEntity.extend({
         // set the display to follow our position on both axis
         me.game.viewport.follow(this.pos, me.game.viewport.AXIS.BOTH);
 
+        // make it a main player object
+        this.type = 'mainPlayer';
         me.game.player = this;
     },
 
@@ -193,7 +195,7 @@ var CoinEntity = me.CollectableEntity.extend({
         // do something when collected
 
         // play a "coin collected" sound
-        me.audio.play("cling");
+        me.audio.play("pickup");
 
         // give some score
         me.game.HUD.updateItemValue("score", 250);

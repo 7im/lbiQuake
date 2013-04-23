@@ -88,6 +88,7 @@ var EnemyEntity = me.ObjectEntity.extend({
             }
 
             me.game.remove(obj);
+            me.audio.play('dspopain');
             // this.knockback( 1, 2.0, 30 );
         }
     },
@@ -187,7 +188,7 @@ var EnemyEntity = me.ObjectEntity.extend({
         me.game.sort();
 
         this.shootTimer = 180;
-        // me.audio.play( "shoot" );
+        me.audio.play( "dsdshtgn" );
     }
 
     // knockback: function( damage, amt, length )

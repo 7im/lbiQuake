@@ -13,6 +13,10 @@ var g_resources = [{
     type: "image",
     src: "data/maps_tileset/lbi10.png"
 }, {
+    name: "furntiture",
+    type: "image",
+    src: "data/maps_tileset/furntiture.png"
+}, {
     name: "metatiles32x32",
     type: "image",
     src: "data/maps_tileset/metatiles32x32.png"
@@ -20,6 +24,10 @@ var g_resources = [{
     name: "level01",
     type: "tmx",
     src: "data/level01.tmx"
+}, {
+    name: "level02",
+    type: "tmx",
+    src: "data/level02.tmx"
 }, {
     name: "player_sprite",
     type: "image",
@@ -30,6 +38,22 @@ var g_resources = [{
     name: "enemy_sprite",
     type: "image",
     src: "data/sprite/enemy_sprite.png"
+},
+// doors entity
+{
+    name: "top_door",
+    type: "image",
+    src: "data/sprite/top_door.png"
+},
+{
+    name: "bottom_door",
+    type: "image",
+    src: "data/sprite/bottom_door.png"
+},
+{
+    name: "right_door",
+    type: "image",
+    src: "data/sprite/right_door.png"
 },
 // the title screen
 {
@@ -73,22 +97,27 @@ var g_resources = [{
 
 // audio resources
 {
-    name: "cling",
+    name: "pickup",
     type: "audio",
     src: "data/audio/",
     channel: 2
 }, {
-    name: "stomp",
+    name: "dsdoropn",
     type: "audio",
     src: "data/audio/",
     channel: 1
 }, {
-    name: "jump",
+    name: "dsdshtgn",
     type: "audio",
     src: "data/audio/",
     channel: 1
 }, {
-    name: "DST-InertExponent",
+    name: "dspistol",
+    type: "audio",
+    src: "data/audio/",
+    channel: 1
+}, {
+    name: "dspopain",
     type: "audio",
     src: "data/audio/",
     channel: 1
@@ -159,7 +188,8 @@ var jsApp	=
 		// add our player entity in the entity pool
 		me.entityPool.add("mainPlayer", PlayerEntity);
 		me.entityPool.add("CoinEntity", CoinEntity);
-		me.entityPool.add("EnemyEntity", EnemyEntity);
+        me.entityPool.add("EnemyEntity", EnemyEntity);
+		me.entityPool.add("Door", DoorEntity);
 
 		// enable the keyboard
 		me.input.bindKey(me.input.KEY.LEFT,  "left");
@@ -171,8 +201,8 @@ var jsApp	=
 		// me.input.bindKey(me.input.KEY.X,     "jump", true);
 
 		// start the game
-		me.state.change(me.state.PLAY);
-		// me.state.change(me.state.MENU);
+		// me.state.change(me.state.PLAY);
+		me.state.change(me.state.MENU);
 	}
 
 }; // jsApp
@@ -264,7 +294,7 @@ var TitleScreen = me.ScreenObject.extend({    // constructor
         me.input.bindKey(me.input.KEY.ENTER, "enter", true);
 
         // play something
-        me.audio.play("cling");
+        me.audio.play("pickup");
 
     },
 

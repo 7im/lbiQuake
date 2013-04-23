@@ -22,7 +22,7 @@ var Bullet = me.ObjectEntity.extend({
 		this.vel.x = dir.x * 6;
 		this.vel.y = dir.y * 6;
 
-		// me.audio.play("sfx_gerbil_laser_1");
+		me.audio.play("dspistol");
 	},
 	// this function is called by the engine, when
 	// an object is touched by something (here collected)
