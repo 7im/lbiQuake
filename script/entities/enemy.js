@@ -113,19 +113,6 @@ var EnemyEntity = me.ObjectEntity.extend({
 
             this.updateAnimation();
 
-            if (this.hitTimer > 0) {
-                this.hitTimer--;
-            } else {
-                this.collidable = true;
-            }
-            // if (this.walkLeft && this.pos.x <= this.startX) {
-            //     this.walkLeft = false;
-            // } else if (!this.walkLeft && this.pos.x >= this.endX) {
-            //     this.walkLeft = true;
-            // }
-            // // make it walk
-            // this.flipX(this.walkLeft);
-            // this.vel.x += (this.walkLeft) ? -this.accel.x * me.timer.tick : this.accel.x * me.timer.tick;
             this.updateDirectionString();
 
             var direction = this.toPlayer();
@@ -151,6 +138,14 @@ var EnemyEntity = me.ObjectEntity.extend({
                 }
             }
 
+            // check for collision
+            me.game.collide(this);
+
+            if (this.hitTimer > 0) {
+                this.hitTimer--;
+            } else {
+                this.collidable = true;
+            }
             if ( this.shootTimer > 0 ) {
                 this.shootTimer--;
             }

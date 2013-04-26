@@ -320,8 +320,8 @@ var TitleScreen = me.ScreenObject.extend({    // constructor
     draw: function(context) {
         context.drawImage(this.title, 0, 0);
 
-        this.font.draw(context, "PRESS ENTER TO PLAY", 20, 240);
-        this.scrollerfont.draw(context, this.scroller, this.scrollerpos, 440);
+        this.font.draw(context, "PRESS ENTER TO PLAY", 160, 480);
+        this.scrollerfont.draw(context, this.scroller, this.scrollerpos, 640);
     },
 
     // destroy function

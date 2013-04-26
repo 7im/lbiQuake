@@ -13,15 +13,16 @@ var DoorEntity = me.CollectableEntity.extend({
 		if (this.isOpen) {
 			return  false;
 		}
-		if (obj.type === 'mainPlayer') {
+		if (obj.type === 'mainPlayer' || obj.type === me.game.ENEMY_OBJECT) {
 			this.toggleDoor = true;
 		}
-		if (obj.type === 'bullet') {
+		if (obj.type === 'bullet' || obj.type === 'enemyBullet') {
 			me.game.remove(obj);
 		}
 	},
 
 	update: function() {
+            me.game.collide(this);
 		if (this.toggleDoor) {
 			this.isOpen = true;
 			this.toggleDoor = false;
