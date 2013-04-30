@@ -97,6 +97,12 @@ var g_resources = [{
 
 // audio resources
 {
+    name: "music",
+    type: "audio",
+    src: "data/audio/",
+    channel: 1
+},
+{
     name: "pickup",
     type: "audio",
     src: "data/audio/",
@@ -105,22 +111,27 @@ var g_resources = [{
     name: "dsdoropn",
     type: "audio",
     src: "data/audio/",
-    channel: 1
+    channel: 2
 }, {
     name: "dsdshtgn",
     type: "audio",
     src: "data/audio/",
-    channel: 1
+    channel: 3
 }, {
     name: "dspistol",
     type: "audio",
     src: "data/audio/",
-    channel: 1
+    channel: 3
 }, {
     name: "dspopain",
     type: "audio",
     src: "data/audio/",
-    channel: 1
+    channel: 4
+}, {
+    name: "dspldeth",
+    type: "audio",
+    src: "data/audio/",
+    channel: 4
 }];
 
 
@@ -201,7 +212,6 @@ var jsApp	=
 		// me.input.bindKey(me.input.KEY.X,     "jump", true);
 
 		// start the game
-		// me.state.change(me.state.PLAY);
 		me.state.change(me.state.MENU);
 	}
 
@@ -213,7 +223,7 @@ var PlayScreen = me.ScreenObject.extend(
 
    onResetEvent: function() {
 		// play the audio track
-		// me.audio.playTrack("DST-InertExponent");
+        me.audio.playTrack( "music" );
 
 		// load a level
 		me.levelDirector.loadLevel("level01");

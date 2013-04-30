@@ -18,6 +18,9 @@ var EnemyEntity = me.ObjectEntity.extend({
         this.setVelocity(2, 2);
 
         // adjust the bounding box
+        this.updateColRect(10, 28, -1, 0);
+
+        // adjust the bounding box
         this.updateColRect(3, 42, -1, 0);
 
         var directions = [ "down", "left", "up", "right" ];
@@ -85,6 +88,8 @@ var EnemyEntity = me.ObjectEntity.extend({
 
             if (this.hp <= 0) {
                 this.alive = false;
+                this.setCurrentAnimation( "dead" );
+                me.audio.play('dspldeth');
             }
 
             me.game.remove(obj);
@@ -153,7 +158,6 @@ var EnemyEntity = me.ObjectEntity.extend({
         } else {
             this.vel.x = 0;
             this.vel.y = 0;
-            this.setCurrentAnimation( "dead" );
         }
 
         // check and update movement
@@ -172,11 +176,11 @@ var EnemyEntity = me.ObjectEntity.extend({
     fireBullet: function() {
         // note collide is false as the player checks its own collision, bullet will be recipient & get oncollision call
         var bulletPosX = this.pos.x + this.width / 2,
-            bulletPosY = this.pos.y + this.height / 2,
+            bulletPosY = this.pos.y + 15,
             dir = this.toPlayer();
         dir.normalize();
 
-        var bullet = new Laser(this.pos.x, this.pos.y, dir);
+        var bullet = new Bullet(bulletPosX, bulletPosY, dir);
         bullet.type = 'enemyBullet';
 
         me.game.add( bullet, this.z + 1 );

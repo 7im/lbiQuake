@@ -5,6 +5,7 @@ var DoorEntity = me.CollectableEntity.extend({
 		// call the parent constructor
 		this.parent(x, y, settings);
 
+		this.type = 'door';
 		this.isOpen = false;
 		this.toggleDoor = false;
 	},

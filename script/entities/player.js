@@ -15,11 +15,11 @@ var PlayerEntity = me.ObjectEntity.extend({
         // set the default horizontal & vertical speed (accel vector)
         this.setVelocity(3, 3);
 
+        // adjust the bounding box
+        this.updateColRect(10, 28, -1, 0);
+
         // initial player shooting direction - right
         this.direction = new me.Vector2d( 1.0, 0.0 );
-
-        // adjust the bounding box
-        this.updateColRect(3, 42, -1, 0);
 
         var directions = [ "down", "left", "up", "right" ];
         for ( var i = 0; i < directions.length; i++ )
@@ -36,7 +36,8 @@ var PlayerEntity = me.ObjectEntity.extend({
         // set player bullet
         this.bullet = 100;
         this.shootingTimer = 0;
-        this.shootingTimerMax = 20;
+        // this.shootingTimerMax = 20;
+        this.shootingTimerMax = 10;
         // this.origVelocity = new me.Vector2d( 7.0, 7.0 );
         // this.dashTimer = 0;
         // this.dashTimerMax = 30;
@@ -81,10 +82,10 @@ var PlayerEntity = me.ObjectEntity.extend({
         // all attacks have to be on cooldown
         if ( me.input.isKeyPressed( "shoot" )  && this.bullet > 0 && this.shootingTimer === 0 ) {
             var bulletPosX = this.pos.x + this.width / 2,
-                bulletPosY = this.pos.y + this.height / 2,
-                laserEntity = new Bullet(bulletPosX, bulletPosY, this.direction);
+                bulletPosY = this.pos.y + 15,
+                bulletEntity = new Bullet(bulletPosX, bulletPosY, this.direction);
 
-            me.game.add(laserEntity, this.z + 1);
+            me.game.add(bulletEntity, this.z + 1);
             me.game.sort();
 
             this.bullet -= 1;

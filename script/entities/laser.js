@@ -1,4 +1,8 @@
 var Bullet = me.ObjectEntity.extend({
+	config: {
+		distance: 75
+	},
+
 	// extending the init function is not mandatory
 	// unless you need to add some extra initialization
 	init: function(x, y, dir, settings) {
@@ -21,22 +25,15 @@ var Bullet = me.ObjectEntity.extend({
 		this.setFriction(0,0);
 		this.vel.x = dir.x * 6;
 		this.vel.y = dir.y * 6;
+		this.distance = this.config.distance;
 
 		me.audio.play("dspistol");
 	},
-	// this function is called by the engine, when
-	// an object is touched by something (here collected)
 
-	// onCollision: function(res, obj) {
-	// 	if (obj.type === me.game.ENEMY_OBJECT) {
-	// 		me.game.remove(this);
-	// 	} else {
-	// 			//console.log("virus collided with "+obj.name);
-	// 	}
-	// },
 	update: function() {
 		this.pos.x = this.pos.x + this.vel.x * me.timer.tick;
 		this.pos.y = this.pos.y + this.vel.y * me.timer.tick;
+		this.distance--;
 
 		var res = me.game.collide(this),
 			isOutsideX = this.pos.x < 0 || this.pos.x > me.game.viewport.pos.x + me.game.viewport.width,
@@ -44,7 +41,7 @@ var Bullet = me.ObjectEntity.extend({
 
 		this.parent();
 
-		if ( isOutsideX || isOutsideY ) {
+		if ( isOutsideX || isOutsideY || this.distance < 1 ) {
 			me.game.remove(this);
 		}
 
