@@ -65,11 +65,11 @@ var g_resources = [{
 {
     name: "parallax1",
     type: "image",
-    src: "data/background_images/parallax1.png"
+    src: "data/background_images/parallax1a.jpg"
 }, {
     name: "parallax2",
     type: "image",
-    src: "data/background_images/parallax2.png"
+    src: "data/background_images/parallax2a.png"
 },
 // the laser
 {
@@ -273,7 +273,7 @@ var TitleScreen = me.ScreenObject.extend({    // constructor
         this.scrollerfont = null;
         this.scrollertween = null;
 
-        this.scroller = "A SMALL STEP BY STEP TUTORIAL FOR GAME CREATION WITH MELONJS       ";
+        this.scroller = "A TEAM ROMERO PRODUCTION...                         ";
         this.scrollerpos = 600;
     },
 
