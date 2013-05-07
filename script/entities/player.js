@@ -33,21 +33,44 @@ var PlayerEntity = me.ObjectEntity.extend({
         this.addAnimation( "dead", [ i * 4 ] );
         this.directionString = "right";
 
-        // set player bullet
-        this.bullet = 100;
-        this.shootingTimer = 0;
-        // this.shootingTimerMax = 20;
-        this.shootingTimerMax = 10;
-        // this.origVelocity = new me.Vector2d( 7.0, 7.0 );
-        // this.dashTimer = 0;
-        // this.dashTimerMax = 30;
-
         // set the display to follow our position on both axis
         me.game.viewport.follow(this.pos, me.game.viewport.AXIS.BOTH);
 
         // make it a main player object
         this.type = 'mainPlayer';
+        this.collidable = true;
+
+        // set player bullet
+        this.bullet = 100;
+        this.shootingTimer = 0;
+        // this.shootingTimerMax = 20;
+        this.shootingTimerMax = 10;
+        this.hp = 3;
+        this.alive = true;
+
+        // this.origVelocity = new me.Vector2d( 7.0, 7.0 );
+        // this.dashTimer = 0;
+        // this.dashTimerMax = 30;
+
         me.game.player = this;
+    },
+
+    onCollision: function(res, obj) {
+        if (this.alive && obj.type === 'enemyBullet') {
+            this.flicker(45);
+            this.hp--;
+            this.collidable = false;
+            this.hitTimer = 10;
+            me.game.HUD.updateItemValue("hp", -1);
+
+            if (this.hp < 1) {
+                this.alive = false;
+                this.setCurrentAnimation( "dead" );
+                me.audio.play('dspldeth');
+
+                me.state.change(me.state.GAME_OVER);
+            }
+        }
     },
 
     checkInput: function() {
@@ -142,21 +165,26 @@ var PlayerEntity = me.ObjectEntity.extend({
             // if we collide with an enemy
             if (res.obj.type == me.game.ENEMY_OBJECT) {
                 // check if we jumped on it
-                if ((res.y > 0) && ! this.jumping) {
-                    // bounce (force jump)
-                    this.falling = false;
-                    this.vel.y = -this.maxVel.y * me.timer.tick;
-                    // set the jumping flag
-                    this.jumping = true;
-                    // play some audio
-                    me.audio.play("stomp");
-                } else {
+                // if ((res.y > 0) && ! this.jumping) {
+                //     // bounce (force jump)
+                //     this.falling = false;
+                //     this.vel.y = -this.maxVel.y * me.timer.tick;
+                //     // set the jumping flag
+                //     this.jumping = true;
+                //     // play some audio
+                //     me.audio.play("stomp");
+                // } else {
                     // let's flicker in case we touched an enemy
-                    this.flicker(45);
-                }
+                //     this.flicker(45);
+                // }
             }
         }
 
+        if (this.hitTimer > 0) {
+            this.hitTimer--;
+        } else {
+            this.collidable = true;
+        }
         if (this.shootingTimer > 0) {
             this.shootingTimer--;
         }
@@ -192,8 +220,11 @@ var CoinEntity = me.CollectableEntity.extend({
 
     // this function is called by the engine, when
     // an object is touched by something (here collected)
-    onCollision: function() {
+    onCollision: function(res, obj) {
         // do something when collected
+        if (obj.type !== 'mainPlayer') {
+            return false;
+        }
 
         // play a "coin collected" sound
         me.audio.play("pickup");

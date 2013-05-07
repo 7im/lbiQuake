@@ -20,9 +20,6 @@ var EnemyEntity = me.ObjectEntity.extend({
         // adjust the bounding box
         this.updateColRect(10, 28, -1, 0);
 
-        // adjust the bounding box
-        this.updateColRect(3, 42, -1, 0);
-
         var directions = [ "down", "left", "up", "right" ];
         for ( var i = 0; i < directions.length; i++ )
         {
@@ -38,11 +35,10 @@ var EnemyEntity = me.ObjectEntity.extend({
         // make it collidable
         this.collidable = true;
 
-        this.shootTimer = 0;
-
         // make it a enemy object
         this.type = me.game.ENEMY_OBJECT;
 
+        this.shootTimer = 0;
         this.hp = 3;
     },
 
@@ -82,11 +78,11 @@ var EnemyEntity = me.ObjectEntity.extend({
         // which mean at top position for this one
         if (this.alive && obj.type === 'bullet') {
             this.flicker(45);
-            this.hp -= 1;
+            this.hp--;
             this.collidable = false;
-            this.hitTimer = 10;
+            this.hitTimer = 5 + Math.random() * 5;
 
-            if (this.hp <= 0) {
+            if (this.hp < 1) {
                 this.alive = false;
                 this.setCurrentAnimation( "dead" );
                 me.audio.play('dspldeth');

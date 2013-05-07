@@ -57,9 +57,14 @@ var g_resources = [{
 },
 // the title screen
 {
-	name: "title_screen",
+    name: "title_screen",
+    type: "image",
+    src: "data/GUI/title_screen.png"
+},
+{
+	name: "game_over_screen",
 	type: "image",
-	src: "data/GUI/title_screen.png"
+	src: "data/GUI/game_over_screen.jpg"
 },
 // the parallax background
 {
@@ -162,7 +167,7 @@ var jsApp	=
 
 		// Debugging settings
 		// me.debug.renderHitBox = true;
-        me.debug.displayFPS = true;
+        // me.debug.displayFPS = true;
 
 
         // initialize the "audio"
@@ -191,7 +196,7 @@ var jsApp	=
 		// set the "Play/Ingame" Screen Object
 		me.state.set(me.state.PLAY, new PlayScreen());
         // me.state.set(me.state.GAME_END, new WinScreen());
-        // me.state.set(me.state.GAME_OVER, new LoseScreen());
+        me.state.set(me.state.GAME_OVER, new LoseScreen());
 
         // set a global fading transition for the screen
         me.state.transition("fade", "#FFFFFF", 250);
@@ -235,6 +240,8 @@ var PlayScreen = me.ScreenObject.extend(
         me.game.HUD.addItem("score", new ScoreObject(jsApp.config.width - 10, 10));
         me.game.HUD.addItem("bullet", new ScoreObject(280, 10, me.game.player.bullet));
         me.game.HUD.addItem("bulletLabel", new ScoreObject(160, 10, 'AMMO'));
+        me.game.HUD.addItem("hp", new ScoreObject(480, 10, me.game.player.hp));
+        me.game.HUD.addItem("hpLabel", new ScoreObject(420, 10, 'HP'));
 
         // make sure everyhting is in the right order
         me.game.sort();
@@ -343,6 +350,46 @@ var TitleScreen = me.ScreenObject.extend({    // constructor
     }
 
 });
+
+var LoseScreen = me.ScreenObject.extend({
+    init: function() {
+        this.parent(true);
+
+        // title screen image
+        this.screen = null;
+        this.text = null;
+    },
+    onResetEvent: function() {
+        if (this.screen === null) {
+            // init stuff if not yet done
+            this.screen = me.loader.getImage("game_over_screen");
+            // font to display the menu items
+            this.text = new me.BitmapFont("32x32_font", 32);
+            this.text.set("left");
+        }
+
+        // enable the keyboard
+        me.input.bindKey(me.input.KEY.ENTER, "enter", true);
+    },
+    // update function
+    update: function() {
+        // enter pressed ?
+        if (me.input.isKeyPressed('enter')) {
+            me.state.change(me.state.MENU);
+        }
+        return true;
+    },
+    // draw function
+    draw: function(context) {
+        context.drawImage(this.screen, 0, 0);
+        this.text.draw(context, "GAME OVER", 320, 280);
+    },
+    // destroy function
+    onDestroyEvent: function() {
+        me.input.unbindKey(me.input.KEY.ENTER);
+    }
+});
+
 //bootstrap :)
 window.onReady(function()
 {
