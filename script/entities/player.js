@@ -41,7 +41,7 @@ var PlayerEntity = me.ObjectEntity.extend({
         this.collidable = true;
 
         // set player bullet
-        this.bullet = 36;
+        this.bullet = 100;
         this.shootingTimer = 0;
         // this.shootingTimerMax = 20;
         this.shootingTimerMax = 10;
@@ -91,16 +91,6 @@ var PlayerEntity = me.ObjectEntity.extend({
         if ( me.input.isKeyPressed( "down" ) ) {
             tempDir.y = 1.0;
             this.directionString = "down";
-        }
-
-        if ( me.input.isKeyPressed( "pause" ) ) {
-            me.state.pause(true);
-            var resume_loop = setInterval(function check_resume() {
-                if ( me.input.isKeyPressed("pause") ) {
-                    clearInterval(resume_loop);
-                    me.state.resume(true);
-                }
-            }, 100);
         }
 
         if ( tempDir.x !== 0.0 || tempDir.y !== 0.0 ) {
@@ -212,6 +202,40 @@ var PlayerEntity = me.ObjectEntity.extend({
         // else inform the engine we did not perform
         // any update (e.g. position, animation)
         return false;
+    }
+
+});
+
+
+/*----------------
+ a Coin entity
+------------------------ */
+var CoinEntity = me.CollectableEntity.extend({
+    // extending the init function is not mandatory
+    // unless you need to add some extra initialization
+    init: function(x, y, settings) {
+        // call the parent constructor
+        this.parent(x, y, settings);
+    },
+
+    // this function is called by the engine, when
+    // an object is touched by something (here collected)
+    onCollision: function(res, obj) {
+        // do something when collected
+        if (obj.type !== 'mainPlayer') {
+            return false;
+        }
+
+        // play a "coin collected" sound
+        me.audio.play("pickup");
+
+        // give some score
+        me.game.HUD.updateItemValue("score", 250);
+
+        // make sure it cannot be collected "again"
+        this.collidable = false;
+        // remove it
+        me.game.remove(this);
     }
 
 });
