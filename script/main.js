@@ -55,6 +55,26 @@ var g_resources = [{
     type: "image",
     src: "data/sprite/right_door.png"
 },
+{
+    name: "top_door_red",
+    type: "image",
+    src: "data/sprite/top_door_red.png"
+},
+{
+    name: "bottom_door_red",
+    type: "image",
+    src: "data/sprite/bottom_door_red.png"
+},
+{
+    name: "right_door_red",
+    type: "image",
+    src: "data/sprite/right_door_red.png"
+},
+{
+    name: "red_card",
+    type: "image",
+    src: "data/sprite/red_card.png"
+},
 // the title screen
 {
     name: "title_screen",
@@ -76,13 +96,18 @@ var g_resources = [{
     type: "image",
     src: "data/background_images/parallax2a.png"
 },
-// the laser
+// the spinning coin spritesheet
 {
     name: "spinning_coin_gold",
     type: "image",
     src: "data/sprite/spinning_coin_gold.png"
 },
-// the spinning coin spritesheet
+{
+    name: "ammo",
+    type: "image",
+    src: "data/sprite/ammo.png"
+},
+// the laser
 {
     name:"bullet",
     type: "image",
@@ -197,13 +222,15 @@ var jsApp	=
 		me.state.set(me.state.PLAY, new PlayScreen());
         // me.state.set(me.state.GAME_END, new WinScreen());
         me.state.set(me.state.GAME_OVER, new LoseScreen());
+        me.state.set(999, new QuestionScreen());
 
         // set a global fading transition for the screen
         me.state.transition("fade", "#FFFFFF", 250);
 
 		// add our player entity in the entity pool
 		me.entityPool.add("mainPlayer", PlayerEntity);
-		me.entityPool.add("CoinEntity", CoinEntity);
+        me.entityPool.add("AmmoEntity", AmmoEntity);
+		me.entityPool.add("CardEntity", CardEntity);
         me.entityPool.add("EnemyEntity", EnemyEntity);
 		me.entityPool.add("Door", DoorEntity);
 
@@ -213,11 +240,11 @@ var jsApp	=
 		me.input.bindKey(me.input.KEY.UP,    "up");
         me.input.bindKey(me.input.KEY.DOWN,  "down");
         me.input.bindKey(me.input.KEY.SPACE, "shoot");
-		me.input.bindKey(me.input.KEY.ALT,   "dash");
+		me.input.bindKey(me.input.KEY.P,     "pause", true);
 		// me.input.bindKey(me.input.KEY.X,     "jump", true);
 
 		// start the game
-		me.state.change(me.state.MENU);
+        me.state.change(me.state.MENU);
 	}
 
 }; // jsApp
@@ -242,6 +269,7 @@ var PlayScreen = me.ScreenObject.extend(
         me.game.HUD.addItem("bulletLabel", new ScoreObject(160, 10, 'AMMO'));
         me.game.HUD.addItem("hp", new ScoreObject(480, 10, me.game.player.hp));
         me.game.HUD.addItem("hpLabel", new ScoreObject(420, 10, 'HP'));
+        me.game.HUD.addItem("card", new ItemObject(600, 20, 0, 'red_card'));
 
         // make sure everyhting is in the right order
         me.game.sort();
@@ -375,7 +403,7 @@ var LoseScreen = me.ScreenObject.extend({
     update: function() {
         // enter pressed ?
         if (me.input.isKeyPressed('enter')) {
-            me.state.change(me.state.MENU);
+            me.state.change(999);
         }
         return true;
     },
@@ -383,6 +411,45 @@ var LoseScreen = me.ScreenObject.extend({
     draw: function(context) {
         context.drawImage(this.screen, 0, 0);
         this.text.draw(context, "GAME OVER", 320, 280);
+    },
+    // destroy function
+    onDestroyEvent: function() {
+        me.input.unbindKey(me.input.KEY.ENTER);
+    }
+});
+
+var QuestionScreen = me.ScreenObject.extend({
+    init: function() {
+        this.parent(true);
+
+        // title screen image
+        this.screen = null;
+        this.text = null;
+    },
+    onResetEvent: function() {
+        if (this.screen === null) {
+            // init stuff if not yet done
+            this.screen = me.loader.getImage("title_screen");
+            // font to display the menu items
+            this.text = new me.BitmapFont("32x32_font", 32);
+            this.text.set("left");
+        }
+
+        // enable the keyboard
+        me.input.bindKey(me.input.KEY.ENTER, "enter", true);
+    },
+    // update function
+    update: function() {
+        // enter pressed ?
+        if (me.input.isKeyPressed('enter')) {
+            me.state.change(me.state.MENU);
+        }
+        return true;
+    },
+    // draw function
+    draw: function(context) {
+        context.drawImage(this.screen, 0, 0);
+        this.text.draw(context, "ANY QUESTION?", 260, 420);
     },
     // destroy function
     onDestroyEvent: function() {

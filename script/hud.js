@@ -20,3 +20,24 @@ var ScoreObject = me.HUD_Item.extend({
     }
 
 });
+
+var ItemObject = me.HUD_Item.extend({
+    init: function(x, y, val, image) {
+        // call the parent constructor
+        this.parent(x, y, val);
+        // create image icon
+        this.icon = me.loader.getImage( image );
+    },
+
+    /* -----
+
+    draw our score
+
+    ------ */
+    draw: function(context, x, y) {
+        if (this.value > 0) {
+            context.drawImage(this.icon, this.pos.x + x, this.pos.y + y);
+        }
+    }
+
+});
