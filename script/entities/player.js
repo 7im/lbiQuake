@@ -41,11 +41,12 @@ var PlayerEntity = me.ObjectEntity.extend({
         this.collidable = true;
 
         // set player bullet
-        this.bullet = 36;
+        this.bullet = 24;
         this.shootingTimer = 0;
         // this.shootingTimerMax = 20;
         this.shootingTimerMax = 10;
         this.hp = 3;
+        this.card = 0;
         this.alive = true;
 
         // this.origVelocity = new me.Vector2d( 7.0, 7.0 );

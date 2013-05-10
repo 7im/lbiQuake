@@ -20,6 +20,9 @@ var Item = me.CollectableEntity.extend({
         me.audio.play("pickup");
         for (var i in this.hud) {
             me.game.HUD.updateItemValue(i, this.hud[i]);
+            if (i !== 'score') {
+                me.game.player[i] += this.hud[i];
+            }
         }
 
         // make sure it cannot be collected "again"
@@ -42,8 +45,21 @@ var AmmoEntity = Item.extend({
     }
 });
 
+
 /*----------------
- a Ammo entity
+ a First Aid entity
+------------------------ */
+var FirstAidEntity = Item.extend({
+    init: function(x, y, settings) {
+        this.parent(x, y, settings, {
+            score: 500,
+            hp: 3
+        });
+    }
+});
+
+/*----------------
+ a Card entity
 ------------------------ */
 var CardEntity = Item.extend({
     init: function(x, y, settings) {

@@ -17,6 +17,10 @@ var g_resources = [{
     type: "image",
     src: "data/maps_tileset/furntiture.png"
 }, {
+    name: "basement_furniture",
+    type: "image",
+    src: "data/maps_tileset/basement_furniture.png"
+}, {
     name: "metatiles32x32",
     type: "image",
     src: "data/maps_tileset/metatiles32x32.png"
@@ -106,6 +110,11 @@ var g_resources = [{
     name: "ammo",
     type: "image",
     src: "data/sprite/ammo.png"
+},
+{
+    name: "first_aid",
+    type: "image",
+    src: "data/sprite/first_aid.png"
 },
 // the laser
 {
@@ -230,6 +239,7 @@ var jsApp	=
 		// add our player entity in the entity pool
 		me.entityPool.add("mainPlayer", PlayerEntity);
         me.entityPool.add("AmmoEntity", AmmoEntity);
+        me.entityPool.add("FirstAidEntity", FirstAidEntity);
 		me.entityPool.add("CardEntity", CardEntity);
         me.entityPool.add("EnemyEntity", EnemyEntity);
 		me.entityPool.add("Door", DoorEntity);

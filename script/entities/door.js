@@ -15,6 +15,10 @@ var DoorEntity = me.CollectableEntity.extend({
 			return  false;
 		}
 		if (obj.type === 'mainPlayer' || obj.type === me.game.ENEMY_OBJECT) {
+			if ( me.game.player.card > 0 && this.image.src.indexOf('door_red') ) {
+				me.game.player.card--;
+            	me.game.HUD.updateItemValue("card", -1);
+			}
 			this.toggleDoor = true;
 		}
 		if (obj.type === 'bullet' || obj.type === 'enemyBullet') {
