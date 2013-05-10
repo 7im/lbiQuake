@@ -318,7 +318,7 @@ var TitleScreen = me.ScreenObject.extend({    // constructor
         this.scrollerfont = null;
         this.scrollertween = null;
 
-        this.scroller = "A TEAM ROMERO PRODUCTION...                         ";
+        this.scroller = "A TEAM ROMERO PRODUCTION...               ";
         this.scrollerpos = 600;
     },
 
@@ -459,7 +459,7 @@ var QuestionScreen = me.ScreenObject.extend({
     // draw function
     draw: function(context) {
         context.drawImage(this.screen, 0, 0);
-        this.text.draw(context, "ANY QUESTION?", 260, 420);
+        this.text.draw(context, "ANY QUESTIONS?", 260, 420);
     },
     // destroy function
     onDestroyEvent: function() {
