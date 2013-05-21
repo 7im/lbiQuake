@@ -100,12 +100,7 @@ var g_resources = [{
     type: "image",
     src: "data/background_images/parallax2a.png"
 },
-// the spinning coin spritesheet
-{
-    name: "spinning_coin_gold",
-    type: "image",
-    src: "data/sprite/spinning_coin_gold.png"
-},
+// the pickups spritesheet
 {
     name: "ammo",
     type: "image",

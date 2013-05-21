@@ -42,7 +42,7 @@
   </data>
  </layer>
  <objectgroup color="#800080" name="LevelEntities" width="140" height="51">
-  <object name="me.LevelEntity" x="4224" y="704" width="64" height="64">
+  <object name="me.LevelEntity" x="1344" y="1312" width="64" height="64">
    <properties>
     <property name="duration" value="500"/>
     <property name="fade" value="#f0f0f0"/>

@@ -17,7 +17,7 @@ var DoorEntity = me.CollectableEntity.extend({
 		if (obj.type === 'mainPlayer' || obj.type === me.game.ENEMY_OBJECT) {
 			if ( me.game.player.card > 0 && this.image.src.indexOf('door_red') ) {
 				me.game.player.card--;
-            	me.game.HUD.updateItemValue("card", -1);
+				me.game.HUD.updateItemValue("card", -1);
 			}
 			this.toggleDoor = true;
 		}
@@ -27,7 +27,7 @@ var DoorEntity = me.CollectableEntity.extend({
 	},
 
 	update: function() {
-            me.game.collide(this);
+		me.game.collide(this);
 		if (this.toggleDoor) {
 			this.isOpen = true;
 			this.toggleDoor = false;
